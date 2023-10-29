@@ -4,6 +4,10 @@
   gap: 2em;
 }
 
+#user-2 {
+  display: none;
+}
+
 .video-player {
   background: black;
   width: 100%;
