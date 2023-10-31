@@ -39,7 +39,7 @@ let init = async () => {
 
   localStream = await navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: false,
+    audio: true,
   });
   document.getElementById("user-1").srcObject = localStream;
 };
@@ -84,7 +84,7 @@ let createPeerConnection = async (memberId) => {
   // extra checker for access camera and audio
   if (!localStream) {
     localStream = await navigator.mediaDevices.getUserMedia({
-      audio: false,
+      audio: true,
       video: true,
     });
     document.getElementById("user-1").srcObject = localStream;
@@ -156,4 +156,43 @@ const leaveChannel = async () => {
 
 window.addEventListener("beforeunload", leaveChannel);
 // console.log(document.getElementById("user-1"));
+
+// console.log("This is track", localStream.getTracks());
+
+/**
+ * The function `toggleCamera` toggles the enabled state of the video track in a local stream and
+ * updates the background color of an element accordingly.
+ */
+const getCamera = document.getElementById("camera");
+const toggleCamera = async () => {
+  const videoTrack = await localStream
+    .getTracks()
+    .find((track) => track.kind === "video");
+  if (videoTrack.enabled) {
+    videoTrack.enabled = false;
+    getCamera.style.background = "red";
+  } else {
+    videoTrack.enabled = true;
+    getCamera.style.background = "rgba(57, 48, 65, 0.9)";
+  }
+};
+
+const getMic = document.getElementById("mic");
+const toggleMic = async () => {
+  // console.log(localStream.getTracks());
+  const micTrack = localStream
+    .getTracks()
+    .find((track) => track.kind === "audio");
+  if (micTrack.enabled) {
+    micTrack.enabled = false;
+    getMic.style.backgroundColor = "red";
+  } else {
+    micTrack.enabled = true;
+    getMic.style.backgroundColor = "rgba(57, 48, 65, 0.9)";
+  }
+};
+
+getCamera.addEventListener("click", toggleCamera);
+getMic.addEventListener("click", toggleMic);
+
 init();
