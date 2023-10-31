@@ -4,9 +4,18 @@ let remoteStream;
 let APP_ID = "0ac5b4566af848feb8b4f4c5f8adafca";
 let token = null;
 let uid = String(Math.floor(Math.random() * 10000));
-console.info("This is uid", uid);
+// console.info("This is uid", uid);
+
 let client;
 let channel;
+
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const roomId = urlParams.get("roomId");
+// console.log("This is query string", roomId);
+if (!roomId) {
+  window.location = "/lobby.html";
+}
 
 const servers = {
   iceServers: [
@@ -21,7 +30,7 @@ let init = async () => {
   await client.login({ uid, token });
 
   // index.html?rome=12345
-  channel = client.createChannel("main");
+  channel = client.createChannel(roomId);
   await channel.join();
 
   channel.on("MemberJoined", handleUserJoined);
@@ -139,8 +148,8 @@ const addAnswer = async (answer) => {
 };
 
 const leaveChannel = async () => {
-  console.log("this is thw client who leave", client);
-  console.log("this is thw channel who leave", channel);
+  // console.log("this is thw client who leave", client);
+  // console.log("this is thw channel who leave", channel);
   await channel.leave();
   await client.logout();
 };
